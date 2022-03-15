@@ -21,12 +21,13 @@ from todo import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
     # Auth
+    path('login/', views.loginuser, name='loginuser'),
     path('signup/', views.signupuser, name='signupuser'),
     path('logout/', views.logoutuser, name='logoutuser'),
-    # ToDo
-    path('current/', views.currenttodo, name='currenttodo'),
+
+    path('', include('todo.urls')),
+
 ]
 
 if settings.DEBUG:
