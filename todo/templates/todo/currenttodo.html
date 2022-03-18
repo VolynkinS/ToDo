@@ -1,5 +1,15 @@
 {% extends 'todo/base.html' %}
 
 {% block content %}
-    <h1>Current</h1>
-{% endblock content %}
+
+<h1>Current</h1>
+<ul>
+    {% for todo in todos %}
+    <li>
+        <a href="{{ todo.get_absolute_url }}">{% if todo.important %}<b>{% endif %} {{ todo.title }} {% if todo.important %}</b>{% endif %}
+        {% if todo.memo %} - {{ todo.memo }} {% endif %}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

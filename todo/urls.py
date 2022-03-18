@@ -8,4 +8,5 @@ urlpatterns = [
     # ToDo
     path('current/', views.currenttodo, name='currenttodo'),
     path('create/', views.createtodo, name='createtodo'),
+    path('todo/<str:slug>/', views.view_todo, name='view_todo'),
 ]

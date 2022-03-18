@@ -1,17 +1,33 @@
 from django.db import IntegrityError
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from .forms import TodoForm
+from .models import Todo
 
 
 def home(request):
-    return render(request, 'todo/home.html')
+    return render(request, 'todo/home.html', )
+
+
+def view_todo(request, slug):
+    todo = get_object_or_404(Todo, slug=slug, user=request.user)
+    if request.method == 'GET':
+        form = TodoForm(instance=todo)
+        return render(request, 'todo/view_todo.html', {'todo': todo, 'form': form})
+    else:
+        try:
+            form = TodoForm(request.POST, instance=todo)
+            form.save()
+            return redirect('todo:currenttodo')
+        except ValueError:
+            return render(request, 'todo/view_todo.html', {'todo': todo, 'error': 'Bad info'})
 
 
 def currenttodo(request):
-    return render(request, 'todo/currenttodo.html')
+    todos = Todo.objects.filter(user=request.user, datecompleted__isnull=True)
+    return render(request, 'todo/currenttodo.html', {'todos': todos})
 
 
 def createtodo(request):
