@@ -14,5 +14,19 @@
     <button type="submit">Save</button>
 </form>
 
+<br>
+
+<form method="POST" action="{% url 'todo:complete_todo' todo.slug %}">
+    {% csrf_token %}
+    <button type="submit">Complete</button>
+</form>
+
+<br>
+
+<form method="POST" action="{% url 'todo:delete_todo' todo.slug %}">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+
 
 {% endblock content %}
