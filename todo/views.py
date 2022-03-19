@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 from .forms import TodoForm
 from .models import Todo
@@ -43,17 +44,20 @@ def loginuser(request):
             return redirect('todo:currenttodo')
 
 
+@login_required
 def logoutuser(request):
     if request.method == 'POST':
         logout(request)
         return redirect('todo:home')
 
 
+@login_required
 def currenttodo(request):
     todos = Todo.objects.filter(user=request.user, datecompleted__isnull=True)
     return render(request, 'todo/currenttodo.html', {'todos': todos})
 
 
+@login_required
 def createtodo(request):
     if request.method == 'GET':
         return render(request, 'todo/createtodo.html', {'form': TodoForm()})
@@ -68,6 +72,7 @@ def createtodo(request):
             return render(request, 'todo/createtodo.html', {'form': TodoForm(), 'error': 'Bad data passed in. Try again.'})
 
 
+@login_required
 def view_todo(request, slug):
     todo = get_object_or_404(Todo, slug=slug, user=request.user)
     if request.method == 'GET':
@@ -82,6 +87,13 @@ def view_todo(request, slug):
             return render(request, 'todo/view_todo.html', {'todo': todo, 'error': 'Bad info'})
 
 
+@login_required
+def completedtodo(request):
+    todos = Todo.objects.filter(user=request.user, datecompleted__isnull=False)
+    return render(request, 'todo/completedtodo.html', {'todos': todos})
+
+
+@login_required
 def complete_todo(request, slug):
     todo = get_object_or_404(Todo, slug=slug, user=request.user)
     if request.method == 'POST':
@@ -90,6 +102,7 @@ def complete_todo(request, slug):
         return redirect('todo:currenttodo')
 
 
+@login_required
 def delete_todo(request, slug):
     todo = get_object_or_404(Todo, slug=slug, user=request.user)
     if request.method == 'POST':

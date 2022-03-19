@@ -11,7 +11,11 @@
     </head>
     <body>
         {% if user.is_authenticated %}
-        Logged in as {{ user.username }} /
+        Logged in as {{ user.username }}
+
+        <a href="{% url 'todo:createtodo' %}">Create</a>
+        <a href="{% url 'todo:currenttodo' %}">Current</a>
+        <a href="{% url 'todo:completedtodo' %}">Completed</a>
 
         <form action="{% url 'logoutuser' %}" method="POST">
             {% csrf_token %}
@@ -21,6 +25,8 @@
         <a href="{% url 'signupuser' %}">Sign Up</a>
         <a href="{% url 'loginuser' %}">Login</a>
         {% endif %}
+
+
 
         {% block content %}
         <h1>Insert your content</h1>
