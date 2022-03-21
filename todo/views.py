@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
-from .forms import TodoForm, UserRegisterFrom
+from .forms import TodoForm, UserRegisterFrom, UserLoginFrom
 from .models import Todo
 
 
@@ -27,22 +27,24 @@ def signupuser(request):
 
 
 def loginuser(request):
-    if request.method == 'GET':
-        return render(request, 'todo/loginuser.html', {'form': AuthenticationForm()})
+    error = ''
+    if request.method == 'POST':
+        form = UserLoginFrom(data=request.POST)
+        if form.is_valid():
+            # The same as authenticate(request, **request.POST)
+            user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+            if user is not None:
+                login(request, user)
+                return redirect('todo:currenttodo')
     else:
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-        if user is None:
-            return render(request, 'todo/loginuser.html', {'form': AuthenticationForm(), 'error': 'User and passwrod didn\'t match'})
-        else:
-            login(request, user)
-            return redirect('todo:currenttodo')
+        form = UserLoginFrom()
+    return render(request, 'todo/loginuser.html', {'form': form, 'error': error})
 
 
 @login_required
 def logoutuser(request):
-    if request.method == 'POST':
-        logout(request)
-        return redirect('todo:home')
+    logout(request)
+    return redirect('todo:home')
 
 
 @login_required
