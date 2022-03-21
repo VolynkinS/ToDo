@@ -6,27 +6,46 @@
             <h2>Sign Up</h2>
         </div>
     </div>
+
     <div class="row justify-content-center mt-5">
         <div class="col-md-5">
-            {% if error %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-{{ message.tags }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
+
             <form method="POST">
                 {% csrf_token %}
+                {{ form.non_field_errors }}
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" class="form-control" id="username" aria-describedby="usernameHelp">
+                    {{ form.username.errors }}
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
                     <small id="usernameHelp" class="form-text text-muted">Your username must be unique. We'll let you know if someone has taken it already.</small>
                 </div>
                 <div class="form-group">
-                    <label for="password1">Password</label>
-                    <input type="password" name="password1" class="form-control" id="password1">
+                    {{ form.email.errors }}
+                    <label for="{{ form.email.id_for_label }}">Email</label>
+                    {{ form.email }}
                 </div>
                 <div class="form-group">
-                    <label for="password2">Confirm Password</label>
-                    <input type="password" name="password2" class="form-control" id="password2">
+                    {{ form.password1.errors }}
+                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="form-group">
+                    {{ form.password2.errors }}
+                    <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                    {{ form.password2 }}
                 </div>
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
