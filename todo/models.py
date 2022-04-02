@@ -13,6 +13,9 @@ class Todo(models.Model):
     important = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ['-created']
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)

@@ -32,13 +32,15 @@ def loginuser(request):
         form = UserLoginFrom(data=request.POST)
         if form.is_valid():
             # The same as authenticate(request, **request.POST)
-            user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+            user = authenticate(request, username=request.POST['username'],
+                                password=request.POST['password'])
             if user is not None:
                 login(request, user)
                 return redirect('todo:currenttodo')
     else:
         form = UserLoginFrom()
-    return render(request, 'todo/loginuser.html', {'form': form, 'error': error})
+    return render(request, 'todo/loginuser.html',
+                  {'form': form, 'error': error})
 
 
 @login_required
@@ -65,7 +67,8 @@ def createtodo(request):
             newtodo.save()
             return redirect('todo:currenttodo')
         except ValueError:
-            return render(request, 'todo/createtodo.html', {'form': TodoForm(), 'error': 'Bad data passed in. Try again.'})
+            return render(request, 'todo/createtodo.html', {'form': TodoForm(),
+                                                            'error': 'Bad data passed in. Try again.'})
 
 
 @login_required
@@ -73,14 +76,16 @@ def view_todo(request, slug):
     todo = get_object_or_404(Todo, slug=slug, user=request.user)
     if request.method == 'GET':
         form = TodoForm(instance=todo)
-        return render(request, 'todo/view_todo.html', {'todo': todo, 'form': form})
+        return render(request, 'todo/view_todo.html',
+                      {'todo': todo, 'form': form})
     else:
         try:
             form = TodoForm(request.POST, instance=todo)
             form.save()
             return redirect('todo:currenttodo')
         except ValueError:
-            return render(request, 'todo/view_todo.html', {'todo': todo, 'error': 'Bad info'})
+            return render(request, 'todo/view_todo.html',
+                          {'todo': todo, 'error': 'Bad info'})
 
 
 @login_required
