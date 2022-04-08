@@ -57,18 +57,16 @@ def currenttodo(request):
 
 @login_required
 def createtodo(request):
-    if request.method == 'GET':
-        return render(request, 'todo/createtodo.html', {'form': TodoForm()})
-    else:
-        try:
-            form = TodoForm(request.POST)
+    if request.method == 'POST':
+        form = TodoForm(request.POST)
+        if form.is_valid():
             newtodo = form.save(commit=False)
             newtodo.user = request.user
             newtodo.save()
             return redirect('todo:currenttodo')
-        except ValueError:
-            return render(request, 'todo/createtodo.html', {'form': TodoForm(),
-                                                            'error': 'Bad data passed in. Try again.'})
+    else:
+        form = TodoForm()
+    return render(request, 'todo/createtodo.html', {'form': form})
 
 
 @login_required
