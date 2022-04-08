@@ -9,7 +9,7 @@ from .models import Todo
 
 
 def home(request):
-    return render(request, 'todo/home.html', )
+    return render(request, 'todo/home.html')
 
 
 def signupuser(request):
