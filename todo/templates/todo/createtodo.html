@@ -3,47 +3,46 @@
 {% block content_title %} New Todo {% endblock %}
 
 {% block content %}
+<form method="POST">
+    {% csrf_token %}
 
-        <form method="POST">
-            {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
 
-            {% if form.non_field_errors %}
-            <div class="alert alert-danger" role="alert">
-                {{ form.non_field_errors }}
-            </div>
-            {% endif %}
+    <div class="form-group">
+        {% if form.title.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.title.errors }}
+        </div>
+        {% endif %}
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+    </div>
 
-            <div class="form-group">
-                {% if form.title.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ form.title.errors }}
-                </div>
-                {% endif %}
-                <label for="{{ form.title.id_for_label }}">Title</label>
-                {{ form.title }}
-            </div>
+    <div class="form-group">
+        {% if form.memo.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.memo.errors }}
+        </div>
+        {% endif %}
+        <label for="{{ form.memo.id_for_label }}">Memo</label>
+        {{ form.memo }}
+    </div>
 
-            <div class="form-group">
-                {% if form.memo.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ form.memo.errors }}
-                </div>
-                {% endif %}
-                <label for="{{ form.memo.id_for_label }}">Memo</label>
-                {{ form.memo }}
-            </div>
+    <div class="form-group">
+        {% if form.important.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.important.errors }}
+        </div>
+        {% endif %}
+        {{ form.important }}
+        <label class='form-check-label'
+               for="{{ form.important.id_for_label }}">Important</label>
+    </div>
 
-            <div class="form-group">
-                {% if form.important.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ form.important.errors }}
-                </div>
-                {% endif %}
-                {{ form.important }}
-                <label class='form-check-label'
-                       for="{{ form.important.id_for_label }}">Important</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
 {% endblock %}

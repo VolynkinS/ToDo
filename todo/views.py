@@ -19,15 +19,12 @@ def signupuser(request):
             user = form.save()
             login(request, user)
             return redirect('todo:currenttodo')
-        else:
-            messages.error(request, 'Registration error!')
     else:
         form = UserRegisterFrom()
     return render(request, 'todo/signupuser.html', {'form': form})
 
 
 def loginuser(request):
-    error = ''
     if request.method == 'POST':
         form = UserLoginFrom(data=request.POST)
         if form.is_valid():
@@ -39,8 +36,7 @@ def loginuser(request):
                 return redirect('todo:currenttodo')
     else:
         form = UserLoginFrom()
-    return render(request, 'todo/loginuser.html',
-                  {'form': form, 'error': error})
+    return render(request, 'todo/loginuser.html', {'form': form})
 
 
 @login_required
