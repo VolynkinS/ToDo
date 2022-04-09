@@ -32,14 +32,17 @@
             <h1>Simply Your Todos!</h1>
             <p>Life is fun. But life is also busy. There's a million different
                 things you could be doing. But what matters is <u>what</u> you
-                do.
-                We created <b><i>ToDo</i></b> to help you make sense of all of
-                your
-                opportunities and live that life that matters most to you. Your
-                new
-                organized life awaits.</p>
-            <a role="button" class="btn btn-primary btn-lg"
-               href="{% url 'signupuser' %}">Start</a>
+                do. We created <b><i>ToDo</i></b> to help you make sense of
+                all of your opportunities and live that life that matters most
+                to you. Your new organized life awaits.</p>
+
+            {% if request.user.is_authenticated %}
+                <a role="button" class="btn btn-primary btn-lg"
+                   href="{% url 'currenttodo' %}">Start</a>
+            {% else %}
+                <a role="button" class="btn btn-primary btn-lg"
+                   href="{% url 'signupuser' %}">Start</a>
+            {% endif %}
         </div>
     </div>
 </div>

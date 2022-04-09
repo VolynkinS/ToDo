@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.utils import timezone
@@ -68,18 +67,15 @@ def createtodo(request):
 @login_required
 def view_todo(request, slug):
     todo = get_object_or_404(Todo, slug=slug, user=request.user)
-    if request.method == 'GET':
-        form = TodoForm(instance=todo)
-        return render(request, 'todo/view_todo.html',
-                      {'todo': todo, 'form': form})
-    else:
-        try:
-            form = TodoForm(request.POST, instance=todo)
+    if request.method == 'POST':
+        form = TodoForm(request.POST, instance=todo)
+        if form.is_valid():
             form.save()
             return redirect('todo:currenttodo')
-        except ValueError:
-            return render(request, 'todo/view_todo.html',
-                          {'todo': todo, 'error': 'Bad info'})
+    else:
+        form = TodoForm(instance=todo)
+    return render(request, 'todo/view_todo.html',
+                  {'todo': todo, 'form': form})
 
 
 @login_required
