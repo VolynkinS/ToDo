@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
 from .forms import TodoForm, UserRegisterFrom, UserLoginFrom
 from .models import Todo
@@ -19,29 +19,23 @@ def currenttodo(request):
     return render(request, 'todo/currenttodo.html', {'todos': todos})
 
 
-@login_required
-def view_todo(request, slug):
-    todo = get_object_or_404(Todo, slug=slug, user=request.user)
-    if request.method == 'POST':
-        form = TodoForm(request.POST, instance=todo)
-        if form.is_valid():
-            form.save()
-            return redirect('todo:currenttodo')
-    else:
-        form = TodoForm(instance=todo)
-    return render(request, 'todo/view_todo.html',
-                  {'todo': todo, 'form': form})
+class ViewTodo(UpdateView, LoginRequiredMixin):
+    model = Todo
+    form_class = TodoForm
+    template_name = 'todo/view_todo.html'
+    success_url = '/current/'
 
 
-class CreateTodo(LoginRequiredMixin, CreateView):
+class CreateTodo(CreateView, LoginRequiredMixin):
     form_class = TodoForm
     template_name = 'todo/createtodo.html'
+    success_url = '/current/'
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
-        return redirect('todo:currenttodo')
+        return redirect(self.get_success_url())
 
 
 @login_required
