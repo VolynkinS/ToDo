@@ -6,7 +6,7 @@ app_name = 'todo'
 urlpatterns = [
     path('', views.home, name='home'),
     # ToDo
-    path('current/', views.currenttodo, name='currenttodo'),
+    path('current/', views.CurrentTodoList.as_view(), name='currenttodo'),
     path('completed/', views.completedtodo, name='completedtodo'),
     path('create/', views.CreateTodo.as_view(), name='createtodo'),
     path('todo/<str:slug>/', views.ViewTodo.as_view(), name='view_todo'),

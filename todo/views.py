@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 
 from .forms import TodoForm, UserRegisterFrom, UserLoginFrom
 from .models import Todo
@@ -13,10 +13,14 @@ def home(request):
     return render(request, 'todo/home.html')
 
 
-@login_required
-def currenttodo(request):
-    todos = Todo.objects.filter(user=request.user, datecompleted__isnull=True)
-    return render(request, 'todo/currenttodo.html', {'todos': todos})
+class CurrentTodoList(ListView, LoginRequiredMixin):
+    model = Todo
+    # template_name = 'todo/todo_list.html'
+    context_object_name = 'todos'
+
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user,
+                                   datecompleted__isnull=True)
 
 
 class ViewTodo(UpdateView, LoginRequiredMixin):
