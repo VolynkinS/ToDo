@@ -28,7 +28,7 @@ class UserRegisterFrom(UserCreationForm):
     def clean_username(self):
         title = self.cleaned_data['username']
         if re.match(r'\d', title):
-            raise ValidationError('Username must not start with a number')
+            raise ValidationError('Username must not start with a number.')
         return title
 
 
@@ -43,6 +43,7 @@ class TodoForm(ModelForm):
     class Meta:
         model = Todo
         fields = ['title', 'memo', 'important']
+        help_text = {'memo': 'Don\'t forget to write memo'}
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'memo': forms.Textarea(

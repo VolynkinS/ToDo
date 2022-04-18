@@ -23,6 +23,16 @@ class CurrentTodoList(ListView, LoginRequiredMixin):
                                    datecompleted__isnull=True)
 
 
+class CompleteTodoList(ListView, LoginRequiredMixin):
+    model = Todo
+    context_object_name = 'todos'
+    template_name = 'todo/completedtodo.html'
+
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user,
+                                   datecompleted__isnull=False)
+
+
 class ViewTodo(UpdateView, LoginRequiredMixin):
     model = Todo
     form_class = TodoForm
@@ -40,12 +50,6 @@ class CreateTodo(CreateView, LoginRequiredMixin):
         self.object.user = self.request.user
         self.object.save()
         return redirect(self.get_success_url())
-
-
-@login_required
-def completedtodo(request):
-    todos = Todo.objects.filter(user=request.user, datecompleted__isnull=False)
-    return render(request, 'todo/completedtodo.html', {'todos': todos})
 
 
 @login_required
