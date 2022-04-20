@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, ListView
 
-from .forms import TodoForm, UserRegisterFrom, UserLoginFrom
+from .forms import TodoForm, UserRegisterForm
 from .models import Todo
 
 
@@ -13,7 +13,7 @@ def home(request):
     return render(request, 'todo/home.html')
 
 
-class CurrentTodoList(ListView, LoginRequiredMixin):
+class CurrentTodoList(LoginRequiredMixin, ListView):
     model = Todo
     # template_name = 'todo/todo_list.html'
     context_object_name = 'todos'
@@ -23,7 +23,7 @@ class CurrentTodoList(ListView, LoginRequiredMixin):
                                    datecompleted__isnull=True)
 
 
-class CompleteTodoList(ListView, LoginRequiredMixin):
+class CompleteTodoList(LoginRequiredMixin, ListView):
     model = Todo
     context_object_name = 'todos'
     template_name = 'todo/completedtodo.html'
@@ -33,14 +33,14 @@ class CompleteTodoList(ListView, LoginRequiredMixin):
                                    datecompleted__isnull=False)
 
 
-class ViewTodo(UpdateView, LoginRequiredMixin):
+class ViewTodo(LoginRequiredMixin, UpdateView):
     model = Todo
     form_class = TodoForm
     template_name = 'todo/view_todo.html'
     success_url = '/current/'
 
 
-class CreateTodo(CreateView, LoginRequiredMixin):
+class CreateTodo(LoginRequiredMixin, CreateView):
     form_class = TodoForm
     template_name = 'todo/createtodo.html'
     success_url = '/current/'
@@ -71,32 +71,11 @@ def delete_todo(request, slug):
 
 def signupuser(request):
     if request.method == 'POST':
-        form = UserRegisterFrom(request.POST)
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('todo:currenttodo')
     else:
-        form = UserRegisterFrom()
+        form = UserRegisterForm()
     return render(request, 'todo/signupuser.html', {'form': form})
-
-
-def loginuser(request):
-    if request.method == 'POST':
-        form = UserLoginFrom(data=request.POST)
-        if form.is_valid():
-            # The same as authenticate(request, **request.POST)
-            user = authenticate(request, username=request.POST['username'],
-                                password=request.POST['password'])
-            if user is not None:
-                login(request, user)
-                return redirect('todo:currenttodo')
-    else:
-        form = UserLoginFrom()
-    return render(request, 'todo/loginuser.html', {'form': form})
-
-
-@login_required
-def logoutuser(request):
-    logout(request)
-    return redirect('todo:home')
