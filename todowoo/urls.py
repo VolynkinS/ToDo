@@ -23,8 +23,10 @@ from todo.forms import UserLoginForm
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Auth
-    path('login/', LoginView.as_view(authentication_form=UserLoginForm,
-                                     template_name='todo/loginuser.html'),
+    path('login/',
+         LoginView.as_view(
+             authentication_form=UserLoginForm,
+             template_name='todo/loginuser.html'),
          name='loginuser'),
     path('signup/', views.signupuser, name='signupuser'),
     path('logout/', LogoutView.as_view(), name='logoutuser'),

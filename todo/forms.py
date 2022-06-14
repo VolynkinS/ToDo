@@ -40,6 +40,8 @@ class UserLoginForm(AuthenticationForm):
 
 
 class TodoForm(ModelForm):
+    error_css_class = 'floatingInputInvalid'
+
     class Meta:
         model = Todo
         fields = ['title', 'memo', 'important']
