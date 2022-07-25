@@ -1,9 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.views.generic import CreateView, UpdateView, ListView
 
-from .forms import TodoForm, UserRegisterFrom, UserLoginFrom
+from .forms import TodoForm, UserRegisterForm
 from .models import Todo
 
 
@@ -11,77 +13,43 @@ def home(request):
     return render(request, 'todo/home.html')
 
 
-def signupuser(request):
-    if request.method == 'POST':
-        form = UserRegisterFrom(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('todo:currenttodo')
-    else:
-        form = UserRegisterFrom()
-    return render(request, 'todo/signupuser.html', {'form': form})
+class CurrentTodoList(LoginRequiredMixin, ListView):
+    model = Todo
+    # template_name = 'todo/todo_list.html'
+    context_object_name = 'todos'
+
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user,
+                                   datecompleted__isnull=True)
 
 
-def loginuser(request):
-    if request.method == 'POST':
-        form = UserLoginFrom(data=request.POST)
-        if form.is_valid():
-            # The same as authenticate(request, **request.POST)
-            user = authenticate(request, username=form.cleaned_data['username'],
-                                password=form.cleaned_data['password'])
-            if user is not None:
-                login(request, user)
-                return redirect('todo:currenttodo')
-    else:
-        form = UserLoginFrom()
-    return render(request, 'todo/loginuser.html', {'form': form})
+class CompleteTodoList(LoginRequiredMixin, ListView):
+    model = Todo
+    context_object_name = 'todos'
+    template_name = 'todo/completedtodo.html'
+
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user,
+                                   datecompleted__isnull=False)
 
 
-@login_required
-def logoutuser(request):
-    logout(request)
-    return redirect('todo:home')
+class ViewTodo(LoginRequiredMixin, UpdateView):
+    model = Todo
+    form_class = TodoForm
+    template_name = 'todo/view_todo.html'
+    success_url = '/current/'
 
 
-@login_required
-def currenttodo(request):
-    todos = Todo.objects.filter(user=request.user, datecompleted__isnull=True)
-    return render(request, 'todo/currenttodo.html', {'todos': todos})
+class CreateTodo(LoginRequiredMixin, CreateView):
+    form_class = TodoForm
+    template_name = 'todo/createtodo.html'
+    success_url = '/current/'
 
-
-@login_required
-def createtodo(request):
-    if request.method == 'POST':
-        form = TodoForm(request.POST)
-        if form.is_valid():
-            newtodo = form.save(commit=False)
-            newtodo.user = request.user
-            newtodo.save()
-            return redirect('todo:currenttodo')
-    else:
-        form = TodoForm()
-    return render(request, 'todo/createtodo.html', {'form': form})
-
-
-@login_required
-def view_todo(request, slug):
-    todo = get_object_or_404(Todo, slug=slug, user=request.user)
-    if request.method == 'POST':
-        form = TodoForm(request.POST, instance=todo)
-        if form.is_valid():
-            form.save()
-            return redirect('todo:currenttodo')
-    else:
-        form = TodoForm(instance=todo)
-    return render(request, 'todo/view_todo.html',
-                  {'todo': todo, 'form': form})
-
-
-@login_required
-def completedtodo(request):
-    todos = Todo.objects.filter(user=request.user, datecompleted__isnull=False)
-    return render(request, 'todo/completedtodo.html', {'todos': todos})
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return redirect(self.get_success_url())
 
 
 @login_required
@@ -99,3 +67,15 @@ def delete_todo(request, slug):
     if request.method == 'POST':
         todo.delete()
         return redirect('todo:currenttodo')
+
+
+def signupuser(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('todo:currenttodo')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'todo/signupuser.html', {'form': form})

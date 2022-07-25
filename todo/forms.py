@@ -9,7 +9,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 
-class UserRegisterFrom(UserCreationForm):
+class UserRegisterForm(UserCreationForm):
     username = forms.CharField(label='Username', widget=forms.TextInput(
         attrs={'class': 'form-control', 'autocomplete': 'off'}))
     email = forms.EmailField(label='E-mail', widget=forms.EmailInput(
@@ -28,11 +28,11 @@ class UserRegisterFrom(UserCreationForm):
     def clean_username(self):
         title = self.cleaned_data['username']
         if re.match(r'\d', title):
-            raise ValidationError('Username must not start with a number')
+            raise ValidationError('Username must not start with a number.')
         return title
 
 
-class UserLoginFrom(AuthenticationForm):
+class UserLoginForm(AuthenticationForm):
     username = forms.CharField(label='Username', widget=forms.TextInput(
         attrs={'class': 'form-control'}))
     password = forms.CharField(label='Username', widget=forms.PasswordInput(
@@ -40,9 +40,12 @@ class UserLoginFrom(AuthenticationForm):
 
 
 class TodoForm(ModelForm):
+    error_css_class = 'floatingInputInvalid'
+
     class Meta:
         model = Todo
         fields = ['title', 'memo', 'important']
+        help_text = {'memo': 'Don\'t forget to write memo'}
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'memo': forms.Textarea(
