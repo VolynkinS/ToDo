@@ -1,20 +1,64 @@
-{% extends "todo/base.html" %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-{% block content %}
-<br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-<div class="row justify-content-center mt-5">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'todo/logo.png' %}">
+    <title>ToDo</title>
+</head>
+<body>
+
+{% include 'inc/_navbar.html' %}
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
         <div class="col-md-7 text-center">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <h1>Simply Your Todos!</h1>
+            <p>Life is fun. But life is also busy. There's a million different
+                things you could be doing. But what matters is <u>what</u> you
+                do. We created <b><i>ToDo</i></b> to help you make sense of
+                all of your opportunities and live that life that matters most
+                to you. Your new organized life awaits.</p>
 
-                 <h1>Simply Your Todos!</h1>
-            <p>Life is fun. But life is also busy. There's a million different things you could be doing. But what matters is <u>what</u> you do.
-                We created <b><i>ToDo</i></b> to help you make sense of all of your opportunities and live that life that matters most to you. Your new organized life awaits.</p>
-        <a role="button" class="btn btn-primary btn-lg" href="{% url 'signupuser' %}">Start</a>
+            {% if request.user.is_authenticated %}
+                <a role="button" class="btn btn-primary btn-lg"
+                   href="{% url 'todo:currenttodo' %}">Start</a>
+            {% else %}
+                <a role="button" class="btn btn-primary btn-lg"
+                   href="{% url 'signupuser' %}">Start</a>
+            {% endif %}
         </div>
     </div>
+</div>
 
-{% endblock %}
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+</html>
+
