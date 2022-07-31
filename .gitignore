@@ -1,20 +1,19 @@
-.idea/
-
-### JupyterNotebooks template
-# gitignore template for Jupyter Notebooks
-# website: http://jupyter.org/
-
-.ipynb_checkpoints
-*/.ipynb_checkpoints/*
-
-# IPython
-profile_default/
-ipython_config.py
+### Python template
 
 # Remove previous ipynb_checkpoints
 #   git rm -r .ipynb_checkpoints/
+# 	git rm -r --cached .
 
-### Python template
+Z_notebook/
+wiki/
+static/
+
+
+# PyCharm
+# http://www.jetbrains.com/pycharm/webhelp/project.html
+.idea
+.iml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -93,8 +92,11 @@ docs/_build/
 target/
 
 # Jupyter Notebook
+.ipynb_checkpoints
 
 # IPython
+profile_default/
+ipython_config.py
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
