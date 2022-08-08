@@ -8,7 +8,6 @@ Z_notebook/
 wiki/
 static/
 
-
 # PyCharm
 # http://www.jetbrains.com/pycharm/webhelp/project.html
 .idea
@@ -147,7 +146,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# pytype static type analyzer
+# pytype static_p type analyzer
 .pytype/
 
 # Cython debug symbols
